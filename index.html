@@ -1,0 +1,1752 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UG TRB CBT Examination Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Premium Indigo & Vibrant Accents Design System */
+      --primary: #4f46e5; 
+      --primary-dark: #3730a3; 
+      --primary-light: #e0e7ff;
+      --secondary: #10b981; 
+      --secondary-dark: #047857;
+      --success: #10b981; 
+      --danger: #f43f5e; 
+      --warning: #f59e0b; 
+      --bg: #f8fafc; 
+      --text: #0f172a; 
+      --text-muted: #64748b;
+      --border: #e2e8f0; 
+      --card-bg: rgba(255, 255, 255, 0.85); 
+      --shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 40px -15px rgba(79, 70, 229, 0.15);
+      --font-family: 'Inter', sans-serif;
+      --heading-font: 'Outfit', sans-serif;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body { 
+      font-family: var(--font-family); 
+      background-color: var(--bg); 
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.06) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.04) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.03) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text); 
+      line-height: 1.6; 
+      overflow-x: hidden; 
+    }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .hidden { display: none !important; }
+    
+    /* Glassmorphism Cards */
+    .card { 
+      background: var(--card-bg); 
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px; 
+      box-shadow: var(--shadow); 
+      border: 1px solid rgba(255, 255, 255, 0.6); 
+      padding: 2rem; 
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card:not(.login-card):hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: var(--heading-font);
+      font-weight: 700;
+      color: #1e1b4b;
+    }
+    
+    /* RGB Announcement Marquee */
+    @keyframes colorChange {
+      0%   { color: #ff5e5e; }   
+      25%  { color: #ffeb3b; }   
+      50%  { color: #10b981; }   
+      75%  { color: #38bdf8; }   
+      100% { color: #ff5e5e; }   
+    }
+    .rgb-scroll-text {
+      animation: colorChange 8s linear infinite;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.5px;
+    }
+    .marquee-container {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 12px 0;
+      border-bottom: 3px solid var(--primary);
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Tab Switching */
+    .tabs-nav {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 1.5rem;
+      gap: 10px;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      font-family: var(--heading-font);
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .tab-btn:hover:not(.active) {
+      color: var(--text);
+      border-bottom-color: var(--border);
+    }
+
+    /* Screen Layouts */
+    #login-screen { min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 40px; }
+    .login-card { width: 100%; max-width: 440px; text-align: center; border: 1px solid rgba(79, 70, 229, 0.1); }
+    .logo-img { max-height: 80px; margin-bottom: 20px; filter: drop-shadow(0 4px 10px rgba(79, 70, 229, 0.15)); }
+    .notice-img { width: 100%; max-width: 650px; margin-bottom: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    
+    .login-tabs-container {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+    .login-tab {
+      flex: 1;
+      padding: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+    .login-tab.active {
+      background: #fff;
+      color: var(--primary);
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .form-group { margin-bottom: 1.25rem; text-align: left; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: #475569; }
+    .form-group input, .form-group select, .form-group textarea { 
+      width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--border); 
+      border-radius: 8px; font-size: 0.95rem; transition: all 0.2s; background: #fff;
+      font-family: var(--font-family);
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+    }
+    
+    .btn { 
+      padding: 0.75rem 1.5rem; border: none; border-radius: 8px; 
+      font-weight: 600; font-family: var(--heading-font); letter-spacing: 0.3px; cursor: pointer; 
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79,70,229,0.25); }
+    .btn-secondary { background: #e2e8f0; color: var(--text); }
+    .btn-secondary:hover:not(:disabled) { background: #cbd5e1; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover:not(:disabled) { background: #b91c1c; }
+    .btn-success { background: var(--secondary); color: #fff; }
+    .btn-success:hover:not(:disabled) { background: var(--secondary-dark); }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover:not(:disabled) { background: var(--primary-light); }
+
+    /* Bilingual Formatting Classes */
+    .bilingual-box { display: flex; flex-direction: column; }
+    .lang-tamil { font-weight: 600; color: #1e293b; margin-bottom: 2px; }
+    .lang-english { font-size: 0.9em; color: var(--primary); font-style: italic; font-weight: 500; }
+    
+    /* Font scaling context */
+    #question-area { --exam-font-scale: 1.0; }
+    .scale-q-text { font-size: calc(1.15rem * var(--exam-font-scale, 1)) !important; }
+    .scale-opt-text { font-size: calc(1rem * var(--exam-font-scale, 1)) !important; }
+
+    /* Student Portal & Dashboard */
+    .student-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border); margin-bottom: 2rem; }
+    .welcome-text { font-size: 1.8rem; font-family: var(--heading-font); }
+    .info-bar { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 5px; font-size: 0.9rem; color: var(--text-muted); }
+    
+    .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 1.5rem; }
+    @media (max-width: 768px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    .exam-banner-card {
+      background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(79,70,229,0.15);
+    }
+    .exam-banner-card::after {
+      content: ''; position: absolute; width: 300px; height: 300px; background: rgba(255,255,255,0.05);
+      border-radius: 50%; top: -100px; right: -100px; pointer-events: none;
+    }
+    .exam-banner-card h2 { color: #fff; font-size: 1.75rem; margin-bottom: 8px; }
+    .exam-banner-card p { opacity: 0.9; margin-bottom: 20px; font-weight: 500; }
+
+    /* Exam Interface Screen */
+    .exam-layout { display: grid; grid-template-columns: 3fr 1.2fr; gap: 24px; margin-top: 1.5rem; }
+    @media (max-width: 992px) {
+      .exam-layout { grid-template-columns: 1fr; }
+    }
+
+    .question-panel { padding: 2rem; position: relative; }
+    .question-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+    .question-text { font-size: 1.15rem; font-weight: 600; line-height: 1.5; color: #1e293b; margin-bottom: 1.5rem; }
+    
+    .options-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .option-item { 
+      padding: 14px 18px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center; gap: 12px; font-weight: 500;
+    }
+    .option-item:hover { border-color: var(--primary); background: rgba(79, 70, 229, 0.02); }
+    .option-item.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary-dark); }
+    .option-badge {
+      width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: var(--text-muted);
+      background: #fff; transition: all 0.2s;
+    }
+    .option-item.selected .option-badge {
+      background: var(--primary); border-color: var(--primary); color: #fff;
+    }
+
+    .exam-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+
+    /* Palette Panel */
+    .palette-panel { padding: 1.5rem; display: flex; flex-direction: column; gap: 15px; }
+    .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; max-height: 280px; overflow-y: auto; padding-right: 5px; }
+    .palette-btn {
+      height: 40px; border-radius: 8px; font-weight: 700; font-family: var(--heading-font); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.2s;
+      background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1;
+    }
+    .palette-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .palette-btn.current { outline: 3px solid var(--primary); outline-offset: -3px; }
+    .palette-btn.answered { background: var(--success); color: #fff; border-color: var(--success); }
+    .palette-btn.tagged { background: var(--warning); color: #fff; border-color: var(--warning); }
+    .palette-btn.tagged.answered { background: #d97706; color: #fff; border-color: #d97706; }
+    .palette-btn.visited:not(.answered):not(.tagged) { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+    .palette-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+    .legend-color { width: 14px; height: 14px; border-radius: 4px; }
+
+    .timer-box { font-size: 1.8rem; font-family: 'Roboto Mono', monospace; font-weight: 700; color: var(--danger); background: #fff1f2; border: 2px solid #fecdd3; padding: 6px 15px; border-radius: 10px; text-align: center; }
+
+    /* Floating Calculator Widget */
+    .calc-widget {
+      position: fixed; bottom: 85px; right: 25px; width: 260px; background: #0f172a; color: #fff;
+      border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+      z-index: 1000; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s;
+    }
+    .calc-widget.minimized {
+      width: 50px; height: 50px; border-radius: 50%; bottom: 25px; overflow: hidden;
+    }
+    .calc-toggle-btn {
+      position: fixed; bottom: 25px; right: 25px; width: 50px; height: 50px; border-radius: 50%;
+      background: var(--primary); color: #fff; border: none; cursor: pointer; z-index: 1001;
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(79,70,229,0.4);
+      transition: all 0.2s;
+    }
+    .calc-toggle-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
+    .calc-header { background: #1e293b; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 600; }
+    .calc-display { background: #020617; padding: 12px; font-family: 'Roboto Mono', monospace; text-align: right; font-size: 1.4rem; height: 55px; color: #10b981; overflow-x: auto; white-space: nowrap; }
+    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #334155; }
+    .calc-btn { border: none; background: #1e293b; color: #fff; padding: 12px; font-size: 1rem; cursor: pointer; font-weight: 600; }
+    .calc-btn:hover { background: #334155; }
+    .calc-btn.operator { background: #312e81; color: var(--primary-light); }
+    .calc-btn.clear { background: #991b1b; }
+    .calc-btn.equals { background: var(--secondary-dark); grid-column: span 2; }
+
+    /* Admin View Panel */
+    .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 2rem; }
+    .stat-card { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; text-align: center; box-shadow: var(--shadow); }
+    .stat-val { font-size: 2.2rem; font-weight: 800; color: var(--primary); font-family: var(--heading-font); }
+    .stat-lbl { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+
+    /* Custom Tables */
+    .table-container { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); margin-top: 15px; background: #fff; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background: #f1f5f9; padding: 12px 18px; font-family: var(--heading-font); font-weight: 700; color: #475569; border-bottom: 2px solid var(--border); }
+    td { padding: 12px 18px; border-bottom: 1px solid var(--border); font-size: 0.92rem; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(79, 70, 229, 0.01); }
+
+    /* Performance Report Circle */
+    .score-circle {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 15px rgba(79,70,229,0.15); background: #fff;
+    }
+    
+    /* Accessibility controls bar */
+    .accessibility-bar { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; padding: 4px 8px; border-radius: 8px; }
+    .acc-btn { width: 30px; height: 30px; border-radius: 6px; border: none; background: #fff; cursor: pointer; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border: 1px solid var(--border); }
+    .acc-btn:hover { background: var(--primary); color: #fff; }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 9999; color: #fff; font-family: var(--heading-font); gap: 15px;
+    }
+    .spinner {
+      width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--primary-light); border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Print Action Buttons Bar */
+    .print-actions-bar {
+      display: flex; justify-content: center; gap: 12px; margin-bottom: 30px; flex-wrap: wrap;
+    }
+
+    /* Certificate Modal Overlay */
+    .cert-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10000; padding: 20px;
+    }
+    .cert-modal {
+      background: #fff; border-radius: 20px; max-width: 900px; width: 100%;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4); overflow: hidden;
+      animation: certSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes certSlideIn {
+      from { opacity: 0; transform: scale(0.9) translateY(30px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .cert-modal-header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: #fff; padding: 18px 28px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .cert-modal-header h2 { color: #fff; font-size: 1.3rem; }
+    .cert-modal-body { padding: 25px; text-align: center; }
+    .cert-actions-bar { display: flex; justify-content: center; gap: 12px; padding: 15px 25px 25px; flex-wrap: wrap; }
+    .cert-canvas-wrap {
+      border: 3px solid #e2e8f0; border-radius: 8px; overflow: hidden; display: inline-block;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .cert-canvas-wrap canvas { display: block; max-width: 100%; height: auto; }
+
+    /* Print styling rules */
+    @media print {
+      body { background: #fff !important; color: #000 !important; font-size: 12pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .calc-widget, .calc-toggle-btn, #timer, .palette-panel, .tabs-nav, .accessibility-bar, .marquee-container, .loading-overlay, #calc-trigger-btn { display: none !important; }
+      /* Hide all buttons during print */
+      .btn, .print-actions-bar { display: none !important; }
+      .container { width: 100%; max-width: 100%; margin: 0; padding: 10px; }
+      .card { border: none; box-shadow: none; background: transparent !important; backdrop-filter: none; -webkit-backdrop-filter: none; padding: 0; }
+      /* Hide non-active screens */
+      #login-screen, #student-dashboard-screen, #exam-screen, #admin-screen { display: none !important; }
+      /* Force show report screen when printing */
+      #report-screen { display: block !important; }
+      #report-screen .card { display: block !important; }
+      /* Ensure score circle prints with color */
+      .score-circle { border-color: #4f46e5 !important; color: #3730a3 !important; }
+      /* Admin reports card */
+      #admin-reports-card { display: block !important; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid #000; padding: 6px; font-size: 10pt; }
+      /* Ensure question result cards print properly with background colors */
+      [style*="background"] { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      /* Page break handling */
+      .report-question-item { page-break-inside: avoid; break-inside: avoid; margin-bottom: 12px; }
+      h1 { font-size: 18pt !important; }
+      h2 { font-size: 14pt !important; }
+    }
+  </style>
+
+  <link rel="manifest" href="./manifest.json">
+</head>
+<body>
+
+  <!-- Loading Screen Overlay -->
+  <div id="loading-screen" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <p id="loading-message" style="font-weight: 600; font-size: 1.1rem; letter-spacing: 0.5px;">Loading components...</p>
+  </div>
+
+  <div class="marquee-container">
+    <div class="container" style="padding: 0 24px;">
+      <marquee id="login-scrolling-text" class="rgb-scroll-text" direction="left" scrollamount="6">Welcome to the UG TRB CBT Exam Portal. Follow all instructions carefully. Best of luck!</marquee>
+    </div>
+  </div>
+
+  <div class="container">
+    
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+      <div class="card login-card">
+        <img id="dynamic-logo" src="" class="logo-img hidden" alt="Logo">
+        <h1 id="main-academy-name" style="font-size: 1.8rem; margin-bottom: 4px; font-family: var(--heading-font);">UG TRB Academy</h1>
+        <p id="main-exam-title" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px; font-weight: 500;">Online CBT Exam System</p>
+        
+        <div class="login-tabs-container">
+          <div id="tab-student" class="login-tab active" onclick="switchLogin('student')">மாணவர் / Student</div>
+          <div id="tab-admin" class="login-tab" onclick="switchLogin('admin')">அதிகாரி / Admin</div>
+        </div>
+
+        <div id="login-form">
+          <div class="form-group" id="user-field-group">
+            <label id="user-label">மாணவர் குறியீடு / Student Username</label>
+            <input type="text" id="username" placeholder="e.g. trb001">
+          </div>
+          <div class="form-group">
+            <label id="password-label">கடவுச்சொல் / Password</label>
+            <input type="password" id="password" placeholder="••••••••">
+          </div>
+          
+          <button id="login-btn" class="btn btn-primary" style="width: 100%;" onclick="login()">
+            உள்நுழை / Login Portal
+          </button>
+          
+          <p id="login-msg" style="color:var(--danger); margin-top:1.25rem; font-size:0.88rem; font-weight:600; min-height: 20px;"></p>
+        </div>
+      </div>
+      
+      <div id="notice-container" class="hidden" style="margin-top: 30px; text-align: center;">
+        <h3 style="margin-bottom: 12px; font-family: var(--heading-font)">அறிவிப்பு பலகை / Announcement Notice</h3>
+        <img id="dynamic-notice" src="" class="notice-img" alt="Notice">
+      </div>
+    </div>
+
+    <!-- STUDENT DASHBOARD SCREEN -->
+    <div id="student-dashboard-screen" class="hidden">
+      <div class="student-header">
+        <div>
+          <h1 class="welcome-text" id="dash-student-name">Welcome, Student</h1>
+          <div class="info-bar">
+            <span><strong>குழு / Portal:</strong> UG TRB Candidates</span>
+            <span>|</span>
+            <span id="dash-official-subject">Subject: Physics</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="logout()">வெளியேறு / Logout</button>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h2 style="font-size: 1.4rem; margin-bottom: 15px; border-bottom: 2px solid var(--primary-light); padding-bottom: 8px; font-family: var(--heading-font)">அதிகாரப்பூர்வ தேர்வு / Active Scheduled Exam</h2>
+          
+          <div class="exam-banner-card">
+            <h2 id="dash-official-title">UG TRB Computer Based Test</h2>
+            <p style="margin-top: 5px;">Ready to evaluate your preparations? Start the main examination below. Ensure you have a stable network connection.</p>
+            <div style="display: flex; gap: 15px; align-items: center; margin-top: 15px;">
+              <button id="btn-start-official-exam" class="btn btn-success" style="background:#fff; color:var(--primary-dark);" onclick="startExam(null)">தேர்வை தொடங்கு / Start Exam</button>
+              <span id="dash-exam-duration-badge" style="font-weight: 600; font-size: 0.95rem;">⏳ 180 Minutes</span>
+            </div>
+            <!-- Exam Timing Status Indicator -->
+            <div id="exam-window-status" style="margin-top: 15px; font-weight: 600; font-size: 0.95rem; color: #fde047;"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 style="font-size: 1.3rem; margin-bottom: 15px; border-bottom: 2px solid var(--primary-light); padding-bottom: 8px; font-family: var(--heading-font)">பயிற்சி தேர்வுகள் / Practice Exams</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Access your previously conducted subjects and mock papers for self-evaluation.</p>
+          <div id="dash-pq-container" style="display: flex; flex-direction: column; gap: 12px;">
+            <p style="font-size: 0.9rem; font-style: italic; color: var(--text-muted);">No archived practice libraries available yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXAM INTERFACE SCREEN -->
+    <div id="exam-screen" class="hidden">
+      <div class="student-header" style="margin-bottom: 1rem; padding-bottom: 1rem;">
+        <div>
+          <h2 id="student-name-display" style="font-size: 1.3rem; font-family: var(--heading-font)">Student Name</h2>
+          <span id="subject-display" style="font-size:0.85rem; font-weight: 600; color: var(--text-muted)">Subject: General Knowledge</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <div class="accessibility-bar">
+            <span style="font-size: 0.75rem; font-weight: bold; color: var(--text-muted); padding: 0 4px;">FONT:</span>
+            <button class="acc-btn" onclick="adjustFontSize('down')">A-</button>
+            <button class="acc-btn" onclick="adjustFontSize('reset')">A</button>
+            <button class="acc-btn" onclick="adjustFontSize('up')">A+</button>
+          </div>
+          <button class="btn btn-secondary btn-outline" style="padding: 6px 12px; font-size: 0.85rem;" onclick="toggleFullscreen()">🖥️ Fullscreen</button>
+          <div class="timer-box" id="timer">00:00:00</div>
+        </div>
+      </div>
+
+      <div class="exam-layout">
+        <div class="card question-panel" id="question-area">
+          <div class="question-header">
+            <span>வினா / Question <strong id="current-q-num">1</strong> of <strong id="total-q-num">0</strong></span>
+            <span id="mark-indicator" class="hidden" style="color:var(--warning); font-weight:700; font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">⭐ Tagged for Review</span>
+          </div>
+
+          <div id="question-text" class="question-text scale-q-text">Loading question text...</div>
+          <ul class="options-list" id="options-container"></ul>
+
+          <div class="exam-actions">
+            <div>
+              <button class="btn btn-secondary" onclick="prev()">முந்தைய / Previous</button>
+              <button class="btn btn-secondary" onclick="next()">அடுத்த / Next</button>
+            </div>
+            <div>
+              <button class="btn btn-outline" style="border-color: var(--warning); color: #d97706;" onclick="markForReview()">குறிக்கவும் / Tag for Review</button>
+              <button class="btn btn-primary" onclick="submitConfirm()">சமர்ப்பி / Submit Exam</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card palette-panel">
+          <h3 style="font-size: 1.1rem; margin-bottom: 10px; font-family: var(--heading-font)">வினா பலகை / Question Palette</h3>
+          
+          <div class="palette-grid" id="palette-grid"></div>
+          
+          <div class="palette-legend">
+            <div class="legend-item"><div class="legend-color" style="background:#f1f5f9; border: 1px solid #cbd5e1;"></div>Unvisited</div>
+            <div class="legend-item"><div class="legend-color" style="background:var(--danger)"></div>Not Answered</div>
+            <div class="legend-item"><div class="legend-color" style="background:var(--success)"></div>Answered</div>
+            <div class="legend-item"><div class="legend-color" style="background:var(--warning)"></div>Tagged</div>
+            <div class="legend-item" style="grid-column: span 2;"><div class="legend-color" style="background:#d97706"></div>Tagged & Answered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN SCREEN -->
+    <div id="admin-screen" class="hidden">
+      <div class="student-header">
+        <div>
+          <h1 class="welcome-text" style="font-family: var(--heading-font)">தேர்வு நிர்வாக மையம் / Admin Control Center</h1>
+          <p style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">Configure portals, upload papers, manage student credentials, and analyze scores.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="logout()">வெளியேறு / Logout</button>
+      </div>
+
+      <div class="tabs-nav">
+        <button id="btn-admin-config" class="tab-btn active" onclick="switchAdminTab('config')">🔧 Config Settings</button>
+        <button id="btn-admin-questions" class="tab-btn" onclick="switchAdminTab('questions')">📝 Questions Management</button>
+        <button id="btn-admin-students" class="tab-btn" onclick="switchAdminTab('students')">👥 Students Management</button>
+        <button id="btn-admin-reports" class="tab-btn" onclick="switchAdminTab('reports')">📊 Scores & Reports</button>
+      </div>
+
+      <div id="admin-tab-config" class="admin-tab-content">
+        <div class="card">
+          <h2 style="font-size: 1.3rem; margin-bottom: 20px; font-family: var(--heading-font)">Portal Configuration</h2>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group"><label>Academy Name</label><input type="text" id="admin-academy-name"></div>
+            <div class="form-group"><label>Admin Password</label><input type="text" id="admin-password-set"></div>
+            <!-- Exam Timing Config -->
+            <div class="form-group"><label>Exam Start Time</label><input type="datetime-local" id="admin-exam-start"></div>
+            <div class="form-group"><label>Exam End Time</label><input type="datetime-local" id="admin-exam-end"></div>
+
+            <div class="form-group" style="grid-column: span 2;"><label>Scrolling Text Banner (Dynamic Announcements)</label><input type="text" id="admin-scroll-notice"></div>
+            <div class="form-group"><label>Academy Logo (Choose Image)</label><input type="file" id="admin-logo-file" accept="image/*"></div>
+            <div class="form-group"><label>Announcement Banner Image (Notice board)</label><input type="file" id="admin-notice-file" accept="image/*"></div>
+          </div>
+          <button class="btn btn-primary" onclick="saveConfig()">Save Configurations</button>
+          <span id="config-status" style="margin-left:15px; font-weight:600;"></span>
+        </div>
+      </div>
+
+      <div id="admin-tab-questions" class="admin-tab-content hidden">
+        <div class="card">
+          <h2 style="font-size: 1.3rem; margin-bottom: 10px; font-family: var(--heading-font)">Upload New Question Paper Bank</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Upload a CSV file containing the question columns. The old questions will be automatically archived into a practice exam database.</p>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="form-group"><label>Exam Subject Title</label><input type="text" id="admin-subject-name" placeholder="e.g. Physics - Paper I"></div>
+            <div class="form-group"><label>Official Exam Title</label><input type="text" id="admin-exam-title" placeholder="e.g. UG TRB CBT - Mock 1"></div>
+          </div>
+          
+          <div class="form-group">
+            <label>Choose CSV file (Format: ID, Question, Option A, Option B, Option C, Option D, Correct Answer, Explanation)</label>
+            <div style="display: flex; gap: 15px; align-items: center;">
+              <input type="file" id="csv-upload-file" accept=".csv" style="flex: 1;">
+              <button class="btn btn-primary" onclick="uploadCSV()">Upload Questions</button>
+            </div>
+            <span id="csv-upload-status" style="font-weight:bold; display:block; margin-top:10px;"></span>
+          </div>
+
+          <h2 style="font-size: 1.3rem; margin-top: 35px; margin-bottom: 10px; border-top: 1px solid var(--border); padding-top: 25px; font-family: var(--heading-font)">Practice Exams Library</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Archived subjects that students can access as practice tests. You can delete archives here.</p>
+          <div id="admin-practice-library-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px;">
+          </div>
+        </div>
+      </div>
+
+      <div id="admin-tab-students" class="admin-tab-content hidden">
+        <div class="card">
+          <h2 style="font-size: 1.3rem; margin-bottom: 15px; font-family: var(--heading-font)">Bulk Student Roster Upload</h2>
+          <div class="form-group">
+            <label>Upload Student CSV (Format: Username, Password, Full Name)</label>
+            <div style="display: flex; gap: 15px; align-items: center;">
+              <input type="file" id="student-csv-file" accept=".csv" style="flex: 1;">
+              <button class="btn btn-primary" onclick="uploadStudentsCSV()">Bulk Import Students</button>
+            </div>
+            <span id="student-csv-status" style="font-weight:bold; display:block; margin-top:10px;"></span>
+          </div>
+
+          <h2 style="font-size: 1.3rem; margin-top: 35px; margin-bottom: 15px; border-top: 1px solid var(--border); padding-top: 25px; font-family: var(--heading-font)">Add Student Manually</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; align-items: flex-end;">
+            <div class="form-group" style="margin-bottom:0;"><label>Username / Reg No</label><input type="text" id="add-student-uname" placeholder="trb001"></div>
+            <div class="form-group" style="margin-bottom:0;"><label>Password</label><input type="text" id="add-student-pass" placeholder="pass123"></div>
+            <div class="form-group" style="margin-bottom:0;"><label>Student Full Name</label><input type="text" id="add-student-name" placeholder="John Doe"></div>
+            <button class="btn btn-success" onclick="addSingleStudent()">Add Student</button>
+          </div>
+          <span id="student-manual-status" style="font-weight:bold; display:block; margin-top:10px;"></span>
+
+          <h2 style="font-size: 1.3rem; margin-top: 35px; margin-bottom: 15px; border-top: 1px solid var(--border); padding-top: 25px; font-family: var(--heading-font)">Registered Students Roster</h2>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Password</th>
+                  <th>Full Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-students-table-body">
+                <tr><td colspan="4" style="text-align:center;">Loading registered student roster...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="admin-tab-reports" class="admin-tab-content hidden">
+        <div class="admin-stats">
+          <div class="stat-card"><div class="stat-val" id="stat-registered-count">0</div><div class="stat-lbl">Registered Students</div></div>
+          <div class="stat-card"><div class="stat-val" id="stat-taken-count">0</div><div class="stat-lbl">Tests Completed</div></div>
+          <div class="stat-card"><div class="stat-val" id="stat-highest-score">0%</div><div class="stat-lbl">Top Performance</div></div>
+        </div>
+
+        <div class="card" id="admin-reports-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap: wrap; gap: 15px;">
+            <h2 style="font-size: 1.3rem; font-family: var(--heading-font)">Exam Submissions & Scores</h2>
+            <div style="display:flex; gap: 10px; align-items: center;">
+              <!-- New Exam Filter Dropdown -->
+              <select id="admin-exam-filter" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border);" onchange="renderScoreReportsTable()">
+                <option value="ALL">All Exams</option>
+              </select>
+              <button class="btn btn-outline" onclick="exportResultsToCSV()">📥 Export to CSV</button>
+              <button class="btn btn-secondary" onclick="window.print()">🖨️ Print Report</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Exam Title</th>
+                  <th>Username</th>
+                  <th>Student Name</th>
+                  <th>Score Obtained</th>
+                  <th>Percentage</th>
+                  <th>Duration Taken</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-report-body">
+                <tr><td colspan="8" style="text-align:center;">Loading score reports...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card hidden" id="admin-reports-section" style="margin-top:20px;">
+          <h2 style="font-size:1.3rem; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; font-family: var(--heading-font)">
+            <span>Student Performance Breakdown (<span id="admin-breakdown-student-name">Name</span>)</span>
+            <button class="btn btn-secondary" style="padding:4px 10px;" onclick="document.getElementById('admin-reports-section').classList.add('hidden')">Hide</button>
+          </h2>
+          <div id="admin-student-reports"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORT SCREEN -->
+    <div id="report-screen" class="hidden">
+      <div class="card" style="text-align: center; max-width: 800px; margin: 0 auto;">
+        <h1 style="font-size: 2.2rem; color: var(--primary-dark); font-family: var(--heading-font); margin-bottom: 5px;">தேர்வு முடிவு அறிக்கை / Performance Report</h1>
+        <p style="color: var(--text-muted); font-weight: 500; margin-bottom: 25px;">Your exam has been submitted successfully. View your results below.</p>
+        
+        <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin-bottom: 30px; flex-wrap: wrap;">
+          <div id="report-score" class="score-circle" style="width: 140px; height: 140px; border-radius: 50%; border: 8px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 800; color: var(--primary-dark);">0/0</div>
+          
+          <div style="text-align: left;">
+            <h2 id="report-student" style="font-size: 1.5rem; margin-bottom: 8px; font-family: var(--heading-font)">Aravind Kumar</h2>
+            <p style="font-size: 1.1rem; font-weight: 700; color: var(--secondary-dark);">சதவீதம் / Score: <span id="report-percentage">0</span>%</p>
+            <p style="font-size: 1rem; font-weight: 600; color: var(--primary);">தேர்வு தரவரிசை / Current Rank: <span id="report-rank-val">#0</span></p>
+            <p style="font-size: 0.95rem; color: var(--text-muted);">எடுத்துக்கொண்ட நேரம் / Time Taken: <span id="report-time-val">0m 0s</span></p>
+          </div>
+        </div>
+
+        <div class="print-actions-bar">
+          <button class="btn btn-primary" onclick="showDashboardFromReport()">டாஷ்போர்டுக்குச் செல்லவும் / Go to Dashboard</button>
+          <button class="btn btn-outline" onclick="printReport()" style="border-color: #6366f1; color: #4f46e5;">🖨️ அச்சிடு / Print Report</button>
+          <button class="btn btn-success" onclick="downloadReportPDF()">📥 PDF பதிவிறக்கம் / Save as PDF</button>
+        </div>
+
+        <h2 style="font-size: 1.3rem; margin-bottom: 15px; text-align: left; border-top: 1px solid var(--border); padding-top: 25px; font-family: var(--heading-font)">விடைக் குறிப்பு & விளக்கங்கள் / Answer Key & Explanations</h2>
+        <div id="report-details" style="text-align: left; display: flex; flex-direction: column; gap: 15px;">
+        </div>
+        
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 25px;">தேதி / Generated on: <span id="report-time"></span></p>
+      </div>
+    </div>
+
+  </div> 
+
+  <!-- CERTIFICATE MODAL OVERLAY -->
+  <div id="cert-overlay" class="cert-overlay hidden">
+    <div class="cert-modal">
+      <div class="cert-modal-header">
+        <h2>🏆 சான்றிதழ் / Merit Certificate</h2>
+        <span style="cursor:pointer; font-size:1.3rem;" onclick="closeCertificate()">✖</span>
+      </div>
+      <div class="cert-modal-body">
+        <div class="cert-canvas-wrap">
+          <canvas id="cert-canvas" width="1120" height="790"></canvas>
+        </div>
+      </div>
+      <div class="cert-actions-bar">
+        <button class="btn btn-primary" onclick="downloadCertificateImage()">📥 படமாக பதிவிறக்கம் / Download as Image</button>
+        <button class="btn btn-outline" onclick="printCertificate()">🖨️ அச்சிடு / Print Certificate</button>
+        <button class="btn btn-secondary" onclick="closeCertificate()">மூடு / Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING CALCULATOR WIDGET -->
+  <button class="calc-toggle-btn" id="calc-trigger-btn" onclick="toggleCalcWidget()">🧮</button>
+  
+  <div class="calc-widget hidden" id="calculator-widget">
+    <div class="calc-header">
+      <span>UG TRB Exam Calculator</span>
+      <span style="cursor:pointer;" onclick="toggleCalcWidget()">❌</span>
+    </div>
+    <div class="calc-display" id="calc-screen">0</div>
+    <div class="calc-grid">
+      <button class="calc-btn clear" onclick="pressCalc('C')">C</button>
+      <button class="calc-btn operator" onclick="pressCalc('del')">⌫</button>
+      <button class="calc-btn operator" onclick="pressCalc('/')">/</button>
+      <button class="calc-btn operator" onclick="pressCalc('*')">*</button>
+      <button class="calc-btn" onclick="pressCalc('7')">7</button>
+      <button class="calc-btn" onclick="pressCalc('8')">8</button>
+      <button class="calc-btn" onclick="pressCalc('9')">9</button>
+      <button class="calc-btn operator" onclick="pressCalc('-')">-</button>
+      <button class="calc-btn" onclick="pressCalc('4')">4</button>
+      <button class="calc-btn" onclick="pressCalc('5')">5</button>
+      <button class="calc-btn" onclick="pressCalc('6')">6</button>
+      <button class="calc-btn operator" onclick="pressCalc('+')">+</button>
+      <button class="calc-btn" onclick="pressCalc('1')">1</button>
+      <button class="calc-btn" onclick="pressCalc('2')">2</button>
+      <button class="calc-btn" onclick="pressCalc('3')">3</button>
+      <button class="calc-btn equals" onclick="pressCalc('=')">=</button>
+      <button class="calc-btn" style="grid-column: span 2;" onclick="pressCalc('0')">0</button>
+      <button class="calc-btn" onclick="pressCalc('.')">.</button>
+    </div>
+  </div>
+
+  <script>
+    // DOM Element Caches
+    const dom = {
+      loadingScreen: document.getElementById('loading-screen'),
+      loadingMessage: document.getElementById('loading-message'),
+      loginScreen: document.getElementById('login-screen'),
+      studentDashboardScreen: document.getElementById('student-dashboard-screen'),
+      examScreen: document.getElementById('exam-screen'),
+      adminScreen: document.getElementById('admin-screen'),
+      reportScreen: document.getElementById('report-screen'),
+      
+      loginScrollingText: document.getElementById('login-scrolling-text'),
+      mainAcademyName: document.getElementById('main-academy-name'),
+      mainExamTitle: document.getElementById('main-exam-title'),
+      dynamicLogo: document.getElementById('dynamic-logo'),
+      dynamicNotice: document.getElementById('dynamic-notice'),
+      noticeContainer: document.getElementById('notice-container'),
+      
+      usernameInput: document.getElementById('username'),
+      passwordInput: document.getElementById('password'),
+      loginMsg: document.getElementById('login-msg'),
+      
+      dashStudentName: document.getElementById('dash-student-name'),
+      dashOfficialSubject: document.getElementById('dash-official-subject'),
+      dashOfficialTitle: document.getElementById('dash-official-title'),
+      dashExamDurationBadge: document.getElementById('dash-exam-duration-badge'),
+      dashPqContainer: document.getElementById('dash-pq-container'),
+      
+      studentNameDisplay: document.getElementById('student-name-display'),
+      subjectDisplay: document.getElementById('subject-display'),
+      timerDisplay: document.getElementById('timer'),
+      currentQNum: document.getElementById('current-q-num'),
+      totalQNum: document.getElementById('total-q-num'),
+      markIndicator: document.getElementById('mark-indicator'),
+      questionArea: document.getElementById('question-area'),
+      questionText: document.getElementById('question-text'),
+      optionsContainer: document.getElementById('options-container'),
+      paletteGrid: document.getElementById('palette-grid'),
+      
+      adminAcademyName: document.getElementById('admin-academy-name'),
+      adminPasswordSet: document.getElementById('admin-password-set'),
+      adminScrollNotice: document.getElementById('admin-scroll-notice'),
+      adminLogoFile: document.getElementById('admin-logo-file'),
+      adminNoticeFile: document.getElementById('admin-notice-file'),
+      configStatus: document.getElementById('config-status'),
+      
+      adminSubjectName: document.getElementById('admin-subject-name'),
+      adminExamTitle: document.getElementById('admin-exam-title'),
+      csvUploadFile: document.getElementById('csv-upload-file'),
+      csvUploadStatus: document.getElementById('csv-upload-status'),
+      adminPracticeLibraryContainer: document.getElementById('admin-practice-library-container'),
+      
+      studentCsvFile: document.getElementById('student-csv-file'),
+      studentCsvStatus: document.getElementById('student-csv-status'),
+      addStudentUname: document.getElementById('add-student-uname'),
+      addStudentPass: document.getElementById('add-student-pass'),
+      addStudentName: document.getElementById('add-student-name'),
+      studentManualStatus: document.getElementById('student-manual-status'),
+      adminStudentsTableBody: document.getElementById('admin-students-table-body'),
+      
+      statRegisteredCount: document.getElementById('stat-registered-count'),
+      statTakenCount: document.getElementById('stat-taken-count'),
+      statHighestScore: document.getElementById('stat-highest-score'),
+      adminReportBody: document.getElementById('admin-report-body'),
+      adminReportsSection: document.getElementById('admin-reports-section'),
+      adminBreakdownStudentName: document.getElementById('admin-breakdown-student-name'),
+      adminStudentReports: document.getElementById('admin-student-reports'),
+      
+      reportScore: document.getElementById('report-score'),
+      reportStudent: document.getElementById('report-student'),
+      reportPercentage: document.getElementById('report-percentage'),
+      reportRankVal: document.getElementById('report-rank-val'),
+      reportTimeVal: document.getElementById('report-time-val'),
+      reportDetails: document.getElementById('report-details'),
+      reportTime: document.getElementById('report-time'),
+      
+      calcDisplay: document.getElementById('calc-screen'),
+      calcWidget: document.getElementById('calculator-widget'),
+      
+      adminExamStart: document.getElementById('admin-exam-start'),
+      adminExamEnd: document.getElementById('admin-exam-end'),
+      btnStartOfficialExam: document.getElementById('btn-start-official-exam'),
+      examWindowStatus: document.getElementById('exam-window-status')
+    };
+
+    // --- START OF FETCH WRAPPER ---
+    const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; // REPLACE THIS
+
+    window.google = {
+      script: {
+        run: {
+          withSuccessHandler: function(onSuccess) {
+            return {
+              withFailureHandler: function(onFailure) {
+                return new Proxy({}, {
+                  get: function(target, prop) {
+                    return function(...args) {
+                      let params = {};
+                      if (prop === 'authenticateUser') { params = {username: args[0], password: args[1]}; }
+                      else if (prop === 'authenticateAdmin') { params = {password: args[0]}; }
+                      else if (prop === 'submitExam') { params = {responses: args[0], userInfo: args[1], timeTakenSec: args[2], examTitle: args[3]}; }
+                      else if (prop === 'updateConfig') { params = {logoUrl: args[0], noticeUrl: args[1], subjectName: args[2], examTitle: args[3], academyName: args[4], adminPass: args[5], scrollingText: args[6], examStart: args[7], examEnd: args[8]}; }
+                      else if (prop === 'uploadFile') { params = {base64Data: args[0], fileName: args[1]}; }
+                      else if (prop === 'uploadQuestionsCSV') { params = {csvString: args[0], newSubject: args[1], newExamTitle: args[2]}; }
+                      else if (prop === 'deletePracticeExamDB') { params = {subjectName: args[0]}; }
+                      else if (prop === 'addSingleStudent') { params = {username: args[0], password: args[1], fullName: args[2]}; }
+                      else if (prop === 'deleteStudentRow') { params = {username: args[0]}; }
+                      else if (prop === 'uploadStudentsCSV') { params = {csvString: args[0]}; }
+                      
+                      fetch(API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: prop, params: params }),
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                      })
+                      .then(res => res.json())
+                      .then(data => {
+                        if (data.success) { onSuccess(data.data); } else { onFailure(new Error(data.error)); }
+                      }).catch(err => { onFailure(err); });
+                    };
+                  }
+                });
+              }
+            };
+          }
+        }
+      }
+    };
+    // --- END OF FETCH WRAPPER ---
+
+    // Application State Variables
+    let currentLoginType = 'student';
+    let currentUser = null;
+    let questions = [];
+    let responses = {};
+    let marked = {};
+    let visited = {};
+    let currentIndex = 0;
+    let examActive = false;
+    let timeRemaining = 0;
+    let examTimerInterval = null;
+    
+    let activePracticeSubject = null;
+    let practiceExamsLibrary = {};
+    let examDurationMin = 180;
+    let elapsedSeconds = 0;
+
+    // --- RANDOMIZATION FUNCTION (SHUFFLE) ---
+    function shuffleQuestions(array) {
+      // Preserve original index for backend submission accuracy
+      array.forEach((q, i) => { if(q.originalIndex === undefined) q.originalIndex = i; });
+      
+      // Fisher-Yates shuffle algorithm
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => { loadInitialConfig(); });
+
+    function showScreen(screenKey) {
+      dom.loginScreen.classList.add('hidden');
+      dom.studentDashboardScreen.classList.add('hidden');
+      dom.examScreen.classList.add('hidden');
+      dom.adminScreen.classList.add('hidden');
+      dom.reportScreen.classList.add('hidden');
+      
+      if (screenKey === 'login') dom.loginScreen.classList.remove('hidden');
+      else if (screenKey === 'dashboard') dom.studentDashboardScreen.classList.remove('hidden');
+      else if (screenKey === 'exam') dom.examScreen.classList.remove('hidden');
+      else if (screenKey === 'admin') dom.adminScreen.classList.remove('hidden');
+      else if (screenKey === 'report') dom.reportScreen.classList.remove('hidden');
+    }
+
+    function toggleLoader(show, text = 'Loading...') {
+      dom.loadingMessage.innerText = text;
+      dom.loadingScreen.classList.toggle('hidden', !show);
+    }
+
+    function loadInitialConfig() {
+      toggleLoader(true, 'Initializing Exam Portal Settings...');
+      google.script.run
+        .withSuccessHandler(function(config) {
+          toggleLoader(false);
+          if (config['Academy Name']) dom.mainAcademyName.innerText = config['Academy Name'];
+          if (config['Exam Title']) dom.mainExamTitle.innerText = config['Exam Title'];
+          if (config['Scrolling Text']) dom.loginScrollingText.innerText = config['Scrolling Text'];
+          if (config['Exam Duration (Min)']) {
+            examDurationMin = parseInt(config['Exam Duration (Min)']) || 180;
+            dom.dashExamDurationBadge.innerText = `⏳ ${examDurationMin} Minutes`;
+          }
+          if (config['Logo URL']) {
+            dom.dynamicLogo.src = config['Logo URL'];
+            dom.dynamicLogo.classList.remove('hidden');
+          }
+          if (config['Notice URL']) {
+            dom.dynamicNotice.src = config['Notice URL'];
+            dom.noticeContainer.classList.remove('hidden');
+          }
+        })
+        .withFailureHandler(function() {
+          toggleLoader(false);
+          alert('Error initializing configuration files. Running with defaults.');
+        })
+        .getConfig();
+    }
+
+    function switchLogin(type) {
+      currentLoginType = type;
+      document.getElementById('tab-student').classList.toggle('active', type === 'student');
+      document.getElementById('tab-admin').classList.toggle('active', type === 'admin');
+      
+      const userFieldGroup = document.getElementById('user-field-group');
+      if (type === 'student') {
+        document.getElementById('user-label').innerText = "மாணவர் குறியீடு / Student Username";
+        dom.usernameInput.placeholder = "e.g. trb001";
+        userFieldGroup.classList.remove('hidden');
+      } else {
+        userFieldGroup.classList.add('hidden');
+      }
+      dom.loginMsg.innerText = '';
+    }
+
+    function login() {
+      const password = dom.passwordInput.value.trim();
+      if (!password) { dom.loginMsg.innerText = 'Password field cannot be empty.'; return; }
+      
+      toggleLoader(true, 'Verifying credentials...');
+      dom.loginMsg.innerText = '';
+
+      if (currentLoginType === 'student') {
+        const username = dom.usernameInput.value.trim();
+        if (!username) { toggleLoader(false); dom.loginMsg.innerText = 'Username is required.'; return; }
+
+        google.script.run
+          .withSuccessHandler(function(res) {
+            toggleLoader(false);
+            if (res.success) {
+              currentUser = res;
+              dom.passwordInput.value = '';
+              dom.usernameInput.value = '';
+              showScreen('dashboard');
+              loadStudentDashboard();
+            } else {
+              dom.loginMsg.innerText = res.message;
+            }
+          })
+          .withFailureHandler(function() {
+            toggleLoader(false);
+            dom.loginMsg.innerText = 'Server Timeout. Check network connection.';
+          })
+          .authenticateUser(username, password);
+      } else {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            toggleLoader(false);
+            if (res.success) {
+              currentUser = { name: 'Exam Director', username: 'admin', isAdmin: true };
+              dom.passwordInput.value = '';
+              showScreen('admin');
+              switchAdminTab('config');
+            } else {
+              dom.loginMsg.innerText = res.message;
+            }
+          })
+          .withFailureHandler(function() {
+            toggleLoader(false);
+            dom.loginMsg.innerText = 'Server Timeout. Check network connection.';
+          })
+          .authenticateAdmin(password);
+      }
+    }
+
+    function logout() {
+      currentUser = null; activePracticeSubject = null; responses = {}; marked = {}; visited = {}; examActive = false;
+      if (examTimerInterval) clearInterval(examTimerInterval);
+      showScreen('login'); loadInitialConfig();
+    }
+
+    function loadStudentDashboard() {
+      dom.dashStudentName.innerText = `Welcome, ${currentUser.name}`;
+      toggleLoader(true, 'Fetching available exams...');
+
+      google.script.run
+        .withSuccessHandler(function(config) {
+          if (config['Subject Name']) dom.dashOfficialSubject.innerText = `Subject: ${config['Subject Name']}`;
+          if (config['Exam Title']) dom.dashOfficialTitle.innerText = config['Exam Title'];
+          
+          let isExamOpen = true;
+          let statusMsg = '';
+
+          if (config['Exam Start Time'] && config['Exam End Time']) {
+            const now = new Date();
+            const startTime = new Date(config['Exam Start Time']);
+            const endTime = new Date(config['Exam End Time']);
+
+            if (now < startTime) {
+              isExamOpen = false;
+              statusMsg = `⏳ தேர்வு தொடங்கும் நேரம் / Exam Opens at: ${startTime.toLocaleString('en-IN')}`;
+            } else if (now > endTime) {
+              isExamOpen = false;
+              statusMsg = `🛑 தேர்வு முடிவடைந்தது / Exam Ended at: ${endTime.toLocaleString('en-IN')}`;
+            } else {
+              statusMsg = `✅ தேர்வு நடைபெறுகிறது / Exam closes at: ${endTime.toLocaleString('en-IN')}`;
+            }
+          }
+
+          if (isExamOpen) {
+            dom.btnStartOfficialExam.disabled = false;
+            dom.btnStartOfficialExam.style.opacity = '1';
+            dom.btnStartOfficialExam.style.cursor = 'pointer';
+          } else {
+            dom.btnStartOfficialExam.disabled = true;
+            dom.btnStartOfficialExam.style.opacity = '0.6';
+            dom.btnStartOfficialExam.style.cursor = 'not-allowed';
+          }
+          dom.examWindowStatus.innerText = statusMsg;
+          
+          google.script.run
+            .withSuccessHandler(function(practiceGrouped) {
+              toggleLoader(false);
+              practiceExamsLibrary = practiceGrouped || {};
+              renderPracticeExams();
+            })
+            .withFailureHandler(function() { toggleLoader(false); alert('Failed to load practice history libraries.'); })
+            .getPreviousQuestionsGrouped();
+        })
+        .withFailureHandler(function() { toggleLoader(false); alert('Failed to connect to exam configuration.'); })
+        .getConfig();
+    }
+
+    function renderPracticeExams() {
+      const keys = Object.keys(practiceExamsLibrary);
+      if (keys.length === 0) {
+        dom.dashPqContainer.innerHTML = '<p style="font-size: 0.9rem; font-style: italic; color: var(--text-muted);">No archived practice libraries available yet.</p>';
+        return;
+      }
+      let html = '';
+      keys.forEach(function(subject) {
+        const dateStr = practiceExamsLibrary[subject].date || 'N/A';
+        const qCount = practiceExamsLibrary[subject].questions.length || 0;
+        html += `
+          <div style="background:#fff; border: 1px solid var(--border); border-radius:10px; padding:12px 15px; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 4px rgba(0,0,0,0.02)">
+            <div><strong style="color:var(--text); font-size:0.95rem;">${subject}</strong><div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">📅 Archived: ${dateStr} | 📝 ${qCount} Questions</div></div>
+            <button class="btn btn-outline" style="padding:5px 12px; font-size:0.8rem;" onclick="startExam('${subject.replace(/'/g, "\\'")}')">Practice</button>
+          </div>`;
+      });
+      dom.dashPqContainer.innerHTML = html;
+    }
+
+    function startExam(practiceSubjectName) {
+      activePracticeSubject = practiceSubjectName;
+      responses = {}; marked = {}; visited = {}; currentIndex = 0; elapsedSeconds = 0;
+      toggleLoader(true, 'Initializing test paper...');
+
+      if (practiceSubjectName) {
+        const practiceData = practiceExamsLibrary[practiceSubjectName];
+        if (!practiceData || !practiceData.questions || practiceData.questions.length === 0) {
+          toggleLoader(false); alert('Selected practice exam paper contains no questions.'); return;
+        }
+
+        questions = practiceData.questions.map(function(q, i) {
+          return { id: i + 1, question: q.question, options: q.options, correct: q.correct, explanation: q.explanation, originalIndex: i };
+        });
+        
+        // SHUFFLE PRACTICE QUESTIONS
+        shuffleQuestions(questions);
+        setupExamSession();
+        
+      } else {
+        google.script.run
+          .withSuccessHandler(function(loadedQuestions) {
+            if (loadedQuestions.length === 0) { toggleLoader(false); alert('The active scheduled exam contains no questions.'); return; }
+            questions = loadedQuestions;
+            
+            // SHUFFLE OFFICIAL QUESTIONS
+            shuffleQuestions(questions);
+            setupExamSession();
+          })
+          .withFailureHandler(function() { toggleLoader(false); alert('Failed to connect and download active questions.'); })
+          .getQuestions();
+      }
+    }
+
+    function setupExamSession() {
+      toggleLoader(false); examActive = true; showScreen('exam');
+      dom.studentNameDisplay.innerText = currentUser.name;
+      dom.subjectDisplay.innerText = activePracticeSubject ? `Practice Exam: ${activePracticeSubject}` : 'Official Scheduled CBT Exam';
+      dom.totalQNum.innerText = questions.length;
+      
+      timeRemaining = examDurationMin * 60;
+      updateTimerDisplay();
+
+      if (examTimerInterval) clearInterval(examTimerInterval);
+      examTimerInterval = setInterval(function() {
+        timeRemaining--; elapsedSeconds++; updateTimerDisplay();
+        if (timeRemaining <= 0) { clearInterval(examTimerInterval); alert('Exam time limit reached!'); submitExamForce(); }
+      }, 1000);
+
+      renderQuestion(); buildPalette();
+    }
+
+    function updateTimerDisplay() {
+      if (timeRemaining < 0) return;
+      const hours = Math.floor(timeRemaining / 3600), minutes = Math.floor((timeRemaining % 3600) / 60), secs = timeRemaining % 60;
+      dom.timerDisplay.innerText = [hours.toString().padStart(2, '0'), minutes.toString().padStart(2, '0'), secs.toString().padStart(2, '0')].join(':');
+      if (timeRemaining < 600) { dom.timerDisplay.style.color = '#e11d48'; dom.timerDisplay.style.background = '#ffe4e6'; } 
+      else { dom.timerDisplay.style.color = 'var(--danger)'; dom.timerDisplay.style.background = '#fff1f2'; }
+    }
+
+    function renderQuestion() {
+      if (questions.length === 0) return;
+      const q = questions[currentIndex]; visited[currentIndex] = true;
+      dom.currentQNum.innerText = currentIndex + 1;
+      dom.markIndicator.classList.toggle('hidden', !marked[currentIndex]);
+
+      let renderedTextHtml = q.question.includes('||') ? `<div class="bilingual-box"><span class="lang-tamil">${q.question.split('||')[0].trim()}</span><span class="lang-english">${q.question.split('||')[1].trim()}</span></div>` : `<div>${q.question}</div>`;
+      dom.questionText.innerHTML = renderedTextHtml;
+
+      const badges = ['A', 'B', 'C', 'D'];
+      let optionsHtml = '';
+      for (let i = 0; i < 4; i++) {
+        const optVal = q.options[i] || '';
+        if (optVal === '') continue;
+        const isSelected = responses[currentIndex] === badges[i];
+        let optTextHtml = optVal.includes('||') ? `<div class="bilingual-box"><span class="lang-tamil">${optVal.split('||')[0].trim()}</span><span class="lang-english">${optVal.split('||')[1].trim()}</span></div>` : `<div>${optVal}</div>`;
+        optionsHtml += `<li class="option-item ${isSelected ? 'selected' : ''}" onclick="selectOption('${badges[i]}')"><div class="option-badge">${badges[i]}</div><div class="scale-opt-text" style="flex: 1;">${optTextHtml}</div></li>`;
+      }
+      dom.optionsContainer.innerHTML = optionsHtml;
+      updatePaletteUI();
+    }
+
+    function selectOption(badge) { responses[currentIndex] = badge; renderQuestion(); }
+    function prev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+    function next() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+    function markForReview() { marked[currentIndex] = !marked[currentIndex]; renderQuestion(); }
+
+    function buildPalette() {
+      let paletteHtml = '';
+      for (let i = 0; i < questions.length; i++) paletteHtml += `<button id="pal-node-${i}" class="palette-btn" onclick="jumpToQuestion(${i})">${i + 1}</button>`;
+      dom.paletteGrid.innerHTML = paletteHtml; updatePaletteUI();
+    }
+    function jumpToQuestion(index) { currentIndex = index; renderQuestion(); }
+
+    function updatePaletteUI() {
+      for (let i = 0; i < questions.length; i++) {
+        const btn = document.getElementById(`pal-node-${i}`);
+        if (!btn) continue;
+        btn.className = 'palette-btn';
+        if (i === currentIndex) btn.classList.add('current');
+        if (marked[i] && responses[i] !== undefined) btn.classList.add('tagged', 'answered');
+        else if (marked[i]) btn.classList.add('tagged');
+        else if (responses[i] !== undefined) btn.classList.add('answered');
+        else if (visited[i]) btn.classList.add('visited');
+      }
+    }
+
+    function submitConfirm() {
+      const ansCount = Object.keys(responses).length;
+      if (confirm(`Confirmation:\
+\
+Total Questions: ${questions.length}\
+Answered: ${ansCount}\
+Unanswered: ${questions.length - ansCount}\
+\
+Are you sure you want to finalize and submit the exam?`)) {
+        submitExamForce();
+      }
+    }
+
+    function submitExamForce() {
+      if (examTimerInterval) clearInterval(examTimerInterval);
+      examActive = false; toggleLoader(true, 'Computing scores & archiving records...');
+
+      if (activePracticeSubject) {
+        let score = 0; const detailedResults = [];
+        questions.forEach(function(q, idx) {
+          const studentAns = responses[idx] || '';
+          const isCorrect = studentAns === q.correct;
+          if (isCorrect) score++;
+          detailedResults.push({ question: q.question, options: q.options, studentAnswer: studentAns, correctAnswer: q.correct, explanation: q.explanation, isCorrect: isCorrect });
+        });
+        setTimeout(function() {
+          toggleLoader(false); showScreen('report');
+          renderPerformanceReport({ score: score, total: questions.length, percentage: ((score / questions.length) * 100).toFixed(2), studentName: currentUser.name, results: detailedResults, rank: 'N/A', timeTaken: formatTimeSec(elapsedSeconds) });
+        }, 600);
+      } else {
+        let unShuffledResponses = {};
+        questions.forEach(function(q, idx) {
+          unShuffledResponses[q.originalIndex] = responses[idx];
+        });
+
+        // FETCH CURRENT EXAM TITLE FROM UI
+        const currentExamTitle = dom.dashOfficialTitle.innerText || 'Scheduled Exam';
+
+        google.script.run
+          .withSuccessHandler(function(report) { toggleLoader(false); showScreen('report'); renderPerformanceReport(report); })
+          .withFailureHandler(function() { toggleLoader(false); alert('Failed to submit exam.'); })
+          .submitExam(unShuffledResponses, currentUser, elapsedSeconds, currentExamTitle);
+      }
+    }
+
+    function formatTimeSec(seconds) { return `${Math.floor(seconds / 60)}m ${seconds % 60}s`; }
+
+    function renderPerformanceReport(report) {
+      dom.reportScore.innerText = `${report.score}/${report.total}`;
+      dom.reportStudent.innerText = report.studentName;
+      dom.reportPercentage.innerText = report.percentage;
+      dom.reportRankVal.innerText = `#${report.rank}`;
+      dom.reportTimeVal.innerText = report.timeTaken;
+      dom.reportTime.innerText = new Date().toLocaleString();
+
+      let detailsHtml = '';
+      report.results.forEach(function(res, i) {
+        const itemBg = res.isCorrect ? '#f0fdf4' : (res.studentAnswer === '' ? '#fef3c7' : '#fdf2f2');
+        const badgeBorder = res.isCorrect ? '#bbf7d0' : (res.studentAnswer === '' ? '#fde68a' : '#fecdd3');
+        const badgeColor = res.isCorrect ? 'var(--secondary-dark)' : (res.studentAnswer === '' ? '#b45309' : '#be123c');
+        const checkIcon = res.isCorrect ? '🟢 Correct' : (res.studentAnswer === '' ? '🟡 Skipped' : '🔴 Incorrect');
+
+        let optionsListHtml = '';
+        const labels = ['A', 'B', 'C', 'D'];
+        for (let j = 0; j < 4; j++) {
+          const opt = res.options[j]; if (!opt) continue;
+          let optionStyle = labels[j] === res.correctAnswer ? 'font-weight:700; color:var(--success);' : (labels[j] === res.studentAnswer ? 'font-weight:700; color:var(--danger);' : '');
+          optionsListHtml += `<div style="margin-top:3px; ${optionStyle}"><strong>${labels[j]}.</strong> ${formatBilingualHTML(opt)}</div>`;
+        }
+
+        detailsHtml += `
+          <div style="background:${itemBg}; border:1px solid ${badgeBorder}; border-radius:12px; padding:1.25rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:700; font-size:0.95rem; color:#475569;">Question ${i + 1}</span><span style="font-weight:700; font-size:0.85rem; color:${badgeColor};">${checkIcon}</span>
+            </div>
+            <div style="font-size:1.05rem; font-weight:600; margin-bottom:10px;">${formatBilingualHTML(res.question)}</div>
+            <div style="margin-bottom:12px; padding-left:10px; border-left:3px solid var(--border);">${optionsListHtml}</div>
+            <div style="font-size:0.9rem; color:var(--text-muted); margin-top:8px; border-top:1px dashed var(--border); padding-top:8px;">
+              <strong>Your Option:</strong> ${res.studentAnswer || 'None'} | <strong>Correct Option:</strong> ${res.correctAnswer}
+            </div>
+            ${res.explanation ? `<div style="font-size:0.85rem; background:rgba(255,255,255,0.6); padding:8px 12px; border-radius:8px; margin-top:8px; line-height:1.4;">📖 <strong>Explanation:</strong> ${formatBilingualHTML(res.explanation)}</div>` : ''}
+          </div>`;
+      });
+      dom.reportDetails.innerHTML = detailsHtml;
+
+      if (report.rank <= 3) {
+        let rankColor = report.rank === 1 ? '#d97706' : (report.rank === 2 ? '#475569' : '#92400e');
+        let rankMedal = report.rank === 1 ? '🥇' : (report.rank === 2 ? '🥈' : '🥉');
+        let rankText = report.rank === 1 ? 'முதல் இடம்' : (report.rank === 2 ? 'இரண்டாம் இடம்' : 'மூன்றாம் இடம்');
+
+        var certBannerHtml = `
+          <div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border: 2px solid ${rankColor}; border-radius: 16px; padding: 1.5rem; text-align: center; margin-bottom: 25px;">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">${rankMedal}</div>
+            <h3 style="color: #1e293b; font-size: 1.3rem; margin-bottom: 6px; font-family: var(--heading-font);">வாழ்த்துக்கள்! Congratulations!</h3>
+            <p style="color: ${rankColor}; font-weight: 600; margin-bottom: 15px;">நீங்கள் ${rankText} பிடித்துள்ளீர்கள்! You achieved Rank #${report.rank}!</p>
+            <button class="btn btn-primary" style="background: ${rankColor}; border: none;" onclick="generateCertificate('${report.studentName.replace(/'/g, "\\'")}', '${report.percentage}%', '${report.score}/${report.total}', '${report.timeTaken}', ${report.rank})">
+              🏆 சான்றிதழ் பெறுக / View & Download Certificate
+            </button>
+          </div>`;
+        dom.reportDetails.insertAdjacentHTML('beforebegin', certBannerHtml);
+      }
+    }
+
+    function formatBilingualHTML(text) {
+      if (!text) return '';
+      return text.includes('||') ? `<span class="bilingual-box"><span class="lang-tamil" style="display:inline-block;">${text.split('||')[0].trim()}</span><span class="lang-english" style="font-size:0.88em; font-style:italic; color:var(--primary); display:inline-block;">${text.split('||')[1].trim()}</span></span>` : text;
+    }
+
+    function showDashboardFromReport() { showScreen('dashboard'); loadStudentDashboard(); }
+    function printReport() { window.print(); }
+    function downloadReportPDF() {
+      var originalTitle = document.title;
+      var studentName = dom.reportStudent ? dom.reportStudent.innerText : 'Student';
+      var scoreText = dom.reportScore ? dom.reportScore.innerText.replace('/', '_of_') : 'Report';
+      document.title = 'UG_TRB_Report_' + studentName.replace(/\s+/g, '_') + '_' + scoreText;
+      setTimeout(function() { window.print(); setTimeout(function() { document.title = originalTitle; }, 1000); }, 200);
+    }
+
+    function adjustFontSize(action) {
+      if (action === 'up') fontScale = Math.min(fontScale + 0.15, 1.6);
+      else if (action === 'down') fontScale = Math.max(fontScale - 0.15, 0.75);
+      else fontScale = 1.0;
+      dom.questionArea.style.setProperty('--exam-font-scale', fontScale);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(err => alert(`Error: ${err.message}`));
+      else document.exitFullscreen();
+    }
+
+    function toggleCalcWidget() { dom.calcWidget.classList.toggle('hidden'); }
+
+    let calcExpression = '';
+    function pressCalc(val) {
+      if (val === 'C') { calcExpression = ''; dom.calcDisplay.innerText = '0'; }
+      else if (val === 'del') { calcExpression = calcExpression.slice(0, -1); dom.calcDisplay.innerText = calcExpression || '0'; }
+      else if (val === '=') { try { if (!calcExpression) return; calcExpression = eval(calcExpression).toString(); dom.calcDisplay.innerText = calcExpression; } catch(e) { dom.calcDisplay.innerText = 'Error'; calcExpression = ''; } }
+      else { calcExpression += val; dom.calcDisplay.innerText = calcExpression; }
+    }
+
+    function switchAdminTab(tabKey) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.admin-tab-content').forEach(content => content.classList.add('hidden'));
+      document.getElementById(`btn-admin-${tabKey}`).classList.add('active');
+      document.getElementById(`admin-tab-${tabKey}`).classList.remove('hidden');
+      loadAdminTabDetails(tabKey);
+    }
+
+    function loadAdminTabDetails(tabKey) {
+      if (tabKey === 'config') {
+        toggleLoader(true, 'Loading config configurations...');
+        google.script.run
+          .withSuccessHandler(function(config) {
+            toggleLoader(false);
+            dom.adminAcademyName.value = config['Academy Name'] || '';
+            dom.adminPasswordSet.value = config['Admin Password'] || '';
+            dom.adminScrollNotice.value = config['Scrolling Text'] || '';
+            dom.adminExamStart.value = config['Exam Start Time'] || '';
+            dom.adminExamEnd.value = config['Exam End Time'] || '';
+          })
+          .withFailureHandler(function() { toggleLoader(false); alert('Failed to load configurations.'); })
+          .getConfig();
+      } else if (tabKey === 'questions') { loadPracticeLibrariesAdmin(); } 
+        else if (tabKey === 'students') { loadStudentRosterAdmin(); } 
+        else if (tabKey === 'reports') { loadScoreReportsAdmin(); }
+    }
+
+    function saveConfig() {
+      const name = dom.adminAcademyName.value.trim(), pass = dom.adminPasswordSet.value.trim(), scroll = dom.adminScrollNotice.value.trim();
+      const startTime = dom.adminExamStart.value, endTime = dom.adminExamEnd.value;
+      dom.configStatus.innerText = 'Uploading...'; toggleLoader(true, 'Saving portal changes...');
+      const logoFile = dom.adminLogoFile.files[0], noticeFile = dom.adminNoticeFile.files[0];
+      const uploadPromises = [ logoFile ? fileToBase64Promise(logoFile) : Promise.resolve(null), noticeFile ? fileToBase64Promise(noticeFile) : Promise.resolve(null) ];
+
+      Promise.all(uploadPromises).then(function(base64Files) {
+        const logoData = base64Files[0], noticeData = base64Files[1];
+        if (logoData || noticeData) {
+          let pendingLogo = logoData ? true : false, pendingNotice = noticeData ? true : false;
+          let logoUrl = undefined, noticeUrl = undefined;
+          const finalize = function() {
+            if (pendingLogo || pendingNotice) return;
+            google.script.run.withSuccessHandler(function(res) {
+              toggleLoader(false); dom.configStatus.innerText = res.success ? 'Saved Successfully!' : 'Save Error.';
+              if (res.success) { dom.adminLogoFile.value = ''; dom.adminNoticeFile.value = ''; }
+            }).updateConfig(logoUrl, noticeUrl, undefined, undefined, name, pass, scroll, startTime, endTime);
+          };
+          if (logoData) google.script.run.withSuccessHandler(function(url) { logoUrl = url; pendingLogo = false; finalize(); }).uploadFile(logoData.base64, logoData.name);
+          if (noticeData) google.script.run.withSuccessHandler(function(url) { noticeUrl = url; pendingNotice = false; finalize(); }).uploadFile(noticeData.base64, noticeData.name);
+        } else {
+          google.script.run.withSuccessHandler(function(res) { toggleLoader(false); dom.configStatus.innerText = res.success ? 'Saved Successfully!' : 'Save Error.'; })
+            .updateConfig(undefined, undefined, undefined, undefined, name, pass, scroll, startTime, endTime);
+        }
+      });
+    }
+
+    function fileToBase64Promise(file) { return new Promise(function(resolve, reject) { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = function() { resolve({ name: file.name, base64: reader.result }); }; reader.onerror = reject; }); }
+
+    function loadPracticeLibrariesAdmin() {
+      toggleLoader(true, 'Syncing libraries...');
+      google.script.run
+        .withSuccessHandler(function(practiceGrouped) {
+          toggleLoader(false); let html = ''; const keys = Object.keys(practiceGrouped || {});
+          if (keys.length === 0) { dom.adminPracticeLibraryContainer.innerHTML = '<p style="color:var(--text-muted); font-size:0.9rem; font-style:italic;">No archived subject libraries available.</p>'; return; }
+          keys.forEach(function(subject) {
+            const count = practiceGrouped[subject].questions.length || 0;
+            html += `<div style="background:#f8fafc; border:1px solid var(--border); border-radius:12px; padding:15px; display:flex; justify-content:space-between; align-items:center;"><div><h4 style="font-size:0.95rem; color:#1e1b4b;">${subject}</h4><p style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Count: ${count} Questions</p></div><button class="btn btn-danger" style="padding:4px 10px; font-size:0.75rem;" onclick="deletePracticeLibrary('${subject.replace(/'/g, "\\'")}')">Delete</button></div>`;
+          });
+          dom.adminPracticeLibraryContainer.innerHTML = html;
+        })
+        .withFailureHandler(function() { toggleLoader(false); alert('Failed to connect to practice library catalog.'); })
+        .getPreviousQuestionsGrouped();
+    }
+
+    function deletePracticeLibrary(subject) {
+      if (confirm(`Caution: Are you sure you want to permanently delete the "${subject}" library?`)) {
+        toggleLoader(true, 'Removing subject archive...');
+        google.script.run.withSuccessHandler(function(res) { toggleLoader(false); alert(res.message); loadPracticeLibrariesAdmin(); }).withFailureHandler(function() { toggleLoader(false); alert('Failed to delete practice database.'); }).deletePracticeExamDB(subject);
+      }
+    }
+
+    function uploadCSV() {
+      const subject = dom.adminSubjectName.value.trim(), title = dom.adminExamTitle.value.trim(), file = dom.csvUploadFile.files[0];
+      if (!subject || !title || !file) { dom.csvUploadStatus.innerText = 'Error: Fill in all fields and select a valid CSV file.'; return; }
+      dom.csvUploadStatus.innerText = 'Parsing File...'; toggleLoader(true, 'Importing Questions CSV Roster...');
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        google.script.run.withSuccessHandler(function(res) {
+          toggleLoader(false); dom.csvUploadStatus.innerText = res.success ? res.message : `Error: ${res.message}`;
+          if (res.success) { dom.adminSubjectName.value = ''; dom.adminExamTitle.value = ''; dom.csvUploadFile.value = ''; loadPracticeLibrariesAdmin(); }
+        }).withFailureHandler(function() { toggleLoader(false); dom.csvUploadStatus.innerText = 'Upload request failed.'; }).uploadQuestionsCSV(e.target.result, subject, title);
+      };
+      reader.readAsText(file);
+    }
+
+    function loadStudentRosterAdmin() {
+      toggleLoader(true, 'Fetching student roster...');
+      google.script.run
+        .withSuccessHandler(function(list) {
+          toggleLoader(false); adminStudentList = list || []; dom.statRegisteredCount.innerText = adminStudentList.length;
+          let html = '';
+          if (adminStudentList.length === 0) { html = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No student credentials found.</td></tr>'; } 
+          else {
+            adminStudentList.forEach(function(student) {
+              html += `<tr><td><strong>${student.username}</strong></td><td>${student.password}</td><td>${student.fullName}</td><td><button class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteStudent('${student.username.replace(/'/g, "\\'")}')">Remove</button></td></tr>`;
+            });
+          }
+          dom.adminStudentsTableBody.innerHTML = html;
+        })
+        .withFailureHandler(function() { toggleLoader(false); alert('Failed to connect and query student list.'); })
+        .getStudentsList();
+    }
+
+    function addSingleStudent() {
+      const username = dom.addStudentUname.value.trim(), password = dom.addStudentPass.value.trim(), name = dom.addStudentName.value.trim();
+      if (!username || !password || !name) { dom.studentManualStatus.innerText = 'Fill all text fields.'; return; }
+      toggleLoader(true, 'Adding student profile...');
+      google.script.run.withSuccessHandler(function(res) {
+        toggleLoader(false); dom.studentManualStatus.innerText = res.message;
+        if (res.success) { dom.addStudentUname.value = ''; dom.addStudentPass.value = ''; dom.addStudentName.value = ''; loadStudentRosterAdmin(); }
+      }).withFailureHandler(function() { toggleLoader(false); dom.studentManualStatus.innerText = 'API Connection Error.'; }).addSingleStudent(username, password, name);
+    }
+
+    function deleteStudent(username) {
+      if (confirm(`Are you sure you want to delete student "${username}"?`)) {
+        toggleLoader(true, 'Removing student credentials...');
+        google.script.run.withSuccessHandler(function(res) { toggleLoader(false); alert(res.message); loadStudentRosterAdmin(); }).withFailureHandler(function() { toggleLoader(false); alert('Failed to remove student row.'); }).deleteStudentRow(username);
+      }
+    }
+
+    function uploadStudentsCSV() {
+      const file = dom.studentCsvFile.files[0];
+      if (!file) { dom.studentCsvStatus.innerText = 'Choose a CSV file first.'; return; }
+      toggleLoader(true, 'Uploading roster...');
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        google.script.run.withSuccessHandler(function(res) {
+          toggleLoader(false); dom.studentCsvStatus.innerText = res.success ? res.message : `Error: ${res.message}`;
+          if (res.success) { dom.studentCsvFile.value = ''; loadStudentRosterAdmin(); }
+        }).withFailureHandler(function() { toggleLoader(false); dom.studentCsvStatus.innerText = 'Roster import failed.'; }).uploadStudentsCSV(e.target.result);
+      };
+      reader.readAsText(file);
+    }
+
+    let adminReportsData = [];
+    
+    function loadScoreReportsAdmin() {
+      toggleLoader(true, 'Generating analytical stats...');
+      google.script.run
+        .withSuccessHandler(function(reportObj) {
+          toggleLoader(false); 
+          adminReportsData = reportObj.report || [];
+          dom.statTakenCount.innerText = adminReportsData.length;
+          
+          let highest = 0;
+          let availableExams = new Set();
+          
+          adminReportsData.forEach(function(row) { 
+            const perc = parseFloat(row.percentage) || 0; 
+            if (perc > highest) highest = perc; 
+            if (row.examTitle) availableExams.add(row.examTitle);
+          });
+          dom.statHighestScore.innerText = `${highest.toFixed(1)}%`;
+
+          const filterDropdown = document.getElementById('admin-exam-filter');
+          if (filterDropdown) {
+            let options = '<option value="ALL">View All Exams</option>';
+            availableExams.forEach(ex => { options += `<option value="${ex}">${ex}</option>`; });
+            filterDropdown.innerHTML = options;
+          }
+
+          renderScoreReportsTable();
+        })
+        .withFailureHandler(function() { toggleLoader(false); alert('Failed to connect to results sheets.'); })
+        .getAdminReport();
+    }
+
+    function renderScoreReportsTable() {
+      const filterDropdown = document.getElementById('admin-exam-filter');
+      const filterVal = filterDropdown ? filterDropdown.value : 'ALL';
+      
+      let filteredData = adminReportsData;
+      if (filterVal !== 'ALL') {
+        filteredData = adminReportsData.filter(r => r.examTitle === filterVal);
+      }
+
+      let html = '';
+      if (filteredData.length === 0) { 
+        html = '<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">No exam responses logged yet.</td></tr>'; 
+      } else {
+        filteredData.forEach(function(row) {
+          const originalIndex = adminReportsData.findIndex(r => r.username === row.username && r.examTitle === row.examTitle);
+
+          let rankBadge = row.rank === 1 ? '<strong style="color:#d97706;">🥇 #1</strong>' : (row.rank === 2 ? '<strong style="color:#475569;">🥈 #2</strong>' : (row.rank === 3 ? '<strong style="color:#92400e;">🥉 #3</strong>' : `<strong>#${row.rank}</strong>`));
+          let certBtn = row.rank <= 3 ? `<button class="btn btn-success" style="padding:4px 8px; font-size:0.75rem; margin-left:4px;" onclick="generateCertificate('${row.name.replace(/'/g, "\\'")}', '${row.percentage}', '${row.score}/${row.total}', '${row.timeTaken}', ${row.rank})">🏆 Certificate</button>` : '';
+          
+          html += `<tr${row.rank <= 3 ? ' style="background: linear-gradient(90deg, #fefce8, #fffbeb); border-left: 4px solid #f59e0b;"' : ''}>
+            <td>${rankBadge}</td>
+            <td><span style="font-size:0.85rem; font-weight:600; color:var(--primary);">${row.examTitle}</span></td>
+            <td>${row.username}</td>
+            <td>${row.name}${row.rank === 1 ? ' <span style="font-size:0.7rem; background:#fef3c7; color:#92400e; padding:2px 6px; border-radius:4px; font-weight:700;">TOP SCORER</span>' : ''}</td>
+            <td>${row.score}/${row.total}</td>
+            <td><span style="font-weight:700; color:var(--primary);">${row.percentage}</span></td>
+            <td>${row.timeTaken}</td>
+            <td>
+              <button class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" onclick="viewDetailedSubmission(${originalIndex})">Breakdown</button> 
+              ${certBtn}
+            </td>
+          </tr>`;
+        });
+      }
+      dom.adminReportBody.innerHTML = html;
+    }
+
+    function viewDetailedSubmission(index) {
+      const student = adminReportsData[index]; if (!student) return;
+      dom.adminBreakdownStudentName.innerText = student.name; dom.adminReportsSection.classList.remove('hidden');
+
+      let html = '';
+      if (!student.results || student.results.length === 0) { html = '<p style="color:var(--text-muted); font-style:italic;">Detailed question breakdown is not available for this record.</p>'; } 
+      else {
+        student.results.forEach(function(res, i) {
+          const itemBg = res.isCorrect ? '#f0fdf4' : (res.studentAnswer === '' ? '#fef3c7' : '#fdf2f2');
+          const borderC = res.isCorrect ? '#bbf7d0' : (res.studentAnswer === '' ? '#fde68a' : '#fecdd3');
+          let optionsHtml = ''; const labels = ['A', 'B', 'C', 'D'];
+          for (let j = 0; j < 4; j++) {
+            const optVal = res.options[j]; if (!optVal) continue;
+            let decoration = labels[j] === res.correctAnswer ? 'color:var(--success); font-weight:700;' : (labels[j] === res.studentAnswer ? 'color:var(--danger); font-weight:700;' : '');
+            optionsHtml += `<div style="margin-top:3px; ${decoration}"><strong>${labels[j]}.</strong> ${formatBilingualHTML(optVal)}</div>`;
+          }
+          html += `<div style="background:${itemBg}; border:1px solid ${borderC}; border-radius:10px; padding:12px 15px; margin-bottom:12px;"><div style="font-weight:700; font-size:0.85rem; color:#475569; margin-bottom:5px;">Question ${i + 1} | ${res.isCorrect ? '🟢 Correct' : (res.studentAnswer === '' ? '🟡 Skipped' : '🔴 Incorrect')}</div><div style="font-weight:600; font-size:0.95rem; margin-bottom:8px;">${formatBilingualHTML(res.question)}</div><div style="margin-bottom:8px; padding-left:8px; border-left:2px solid var(--border);">${optionsHtml}</div><div style="font-size:0.85rem; color:var(--text-muted);"><strong>Option selected:</strong> ${res.studentAnswer || 'None'} | <strong>Correct Answer:</strong> ${res.correctAnswer}</div></div>`;
+        });
+      }
+      dom.adminStudentReports.innerHTML = html;
+      dom.adminReportsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function exportResultsToCSV() {
+      if (adminReportsData.length === 0) { alert('No score records to export.'); return; }
+      const filterDropdown = document.getElementById('admin-exam-filter');
+      const filterVal = filterDropdown ? filterDropdown.value : 'ALL';
+      
+      let filteredData = adminReportsData;
+      if (filterVal !== 'ALL') {
+        filteredData = adminReportsData.filter(r => r.examTitle === filterVal);
+      }
+      
+      if (filteredData.length === 0) { alert('No records match the current filter.'); return; }
+
+      let csvContent = 'data:text/csv;charset=utf-8,Rank,Exam Title,Username,Full Name,Score,Total Questions,Percentage,Duration Taken\
+';
+      filteredData.forEach(function(row) { 
+        csvContent += [row.rank, `"${row.examTitle}"`, `"${row.username}"`, `"${row.name}"`, row.score, row.total, `"${row.percentage}"`, `"${row.timeTaken}"`].join(',') + '\
+'; 
+      });
+      const encodedUri = encodeURI(csvContent), link = document.createElement('a'); 
+      link.setAttribute('href', encodedUri); 
+      link.setAttribute('download', `UG_TRB_CBT_Results_${new Date().toLocaleDateString().replace(/\//g,'-')}.csv`);
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+    
+    var currentCertStudentName = '', currentCertRank = 1;
+
+    function generateCertificate(studentName, percentage, scoreText, timeTaken, rank) {
+      currentCertStudentName = studentName; currentCertRank = parseInt(rank) || 1;
+      var canvas = document.getElementById('cert-canvas'), ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
+
+      let colors = {}, rankTexts = {};
+      if (currentCertRank === 1) {
+        colors = { outer: '#c9a84c', mid: '#d4af37', inner: '#e8c84a', grad1: '#d4af37', grad2: '#f0d060', badge: '#d97706', bg: '#fffdf7', medal: '🥇' };
+        rankTexts = { eng: 'RANK #1', tam: 'முதல் இடம் / First Position' };
+      } else if (currentCertRank === 2) {
+        colors = { outer: '#94a3b8', mid: '#cbd5e1', inner: '#e2e8f0', grad1: '#94a3b8', grad2: '#f1f5f9', badge: '#475569', bg: '#f8fafc', medal: '🥈' };
+        rankTexts = { eng: 'RANK #2', tam: 'இரண்டாம் இடம் / Second Position' };
+      } else {
+        colors = { outer: '#92400e', mid: '#b45309', inner: '#d97706', grad1: '#92400e', grad2: '#f59e0b', badge: '#92400e', bg: '#fffbeb', medal: '🥉' };
+        rankTexts = { eng: 'RANK #3', tam: 'மூன்றாம் இடம் / Third Position' };
+      }
+
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = colors.bg; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = colors.outer; ctx.lineWidth = 6; ctx.strokeRect(15, 15, W - 30, H - 30);
+      ctx.strokeStyle = colors.mid; ctx.lineWidth = 2; ctx.strokeRect(25, 25, W - 50, H - 50);
+      ctx.strokeStyle = colors.inner; ctx.lineWidth = 1; ctx.strokeRect(35, 35, W - 70, H - 70);
+
+      drawCornerOrnament(ctx, 40, 40, 1, 1, colors.mid); drawCornerOrnament(ctx, W - 40, 40, -1, 1, colors.mid);
+      drawCornerOrnament(ctx, 40, H - 40, 1, -1, colors.mid); drawCornerOrnament(ctx, W - 40, H - 40, -1, -1, colors.mid);
+
+      var grad1 = ctx.createLinearGradient(100, 60, W - 100, 60);
+      grad1.addColorStop(0, 'transparent'); grad1.addColorStop(0.2, colors.grad1); grad1.addColorStop(0.5, colors.grad2); grad1.addColorStop(0.8, colors.grad1); grad1.addColorStop(1, 'transparent');
+      ctx.strokeStyle = grad1; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(100, 70); ctx.lineTo(W - 100, 70); ctx.stroke();
+
+      ctx.font = '60px serif'; ctx.textAlign = 'center'; ctx.fillText(colors.medal, W / 2, 140);
+      ctx.font = '700 42px Outfit, sans-serif'; ctx.fillStyle = '#1e1b4b'; ctx.fillText('CERTIFICATE OF MERIT', W / 2, 200);
+      ctx.font = '500 22px Outfit, sans-serif'; ctx.fillStyle = '#6366f1'; ctx.fillText('மேலிட சான்றிதழ்', W / 2, 235);
+
+      var grad2 = ctx.createLinearGradient(W / 2 - 200, 0, W / 2 + 200, 0);
+      grad2.addColorStop(0, 'transparent'); grad2.addColorStop(0.5, colors.grad2); grad2.addColorStop(1, 'transparent');
+      ctx.strokeStyle = grad2; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(W / 2 - 200, 250); ctx.lineTo(W / 2 + 200, 250); ctx.stroke();
+
+      ctx.font = '400 18px Inter, sans-serif'; ctx.fillStyle = '#64748b'; ctx.fillText('This is to proudly certify that', W / 2, 295);
+
+      ctx.font = '800 38px Outfit, sans-serif';
+      var nameGrad = ctx.createLinearGradient(W / 2 - 200, 330, W / 2 + 200, 330);
+      nameGrad.addColorStop(0, '#4f46e5'); nameGrad.addColorStop(0.5, '#7c3aed'); nameGrad.addColorStop(1, '#4f46e5');
+      ctx.fillStyle = nameGrad; ctx.fillText(studentName.toUpperCase(), W / 2, 345);
+
+      ctx.strokeStyle = colors.mid; ctx.lineWidth = 1.5; ctx.beginPath();
+      var nameWidth = ctx.measureText(studentName.toUpperCase()).width;
+      ctx.moveTo(W / 2 - nameWidth / 2 - 20, 358); ctx.lineTo(W / 2 + nameWidth / 2 + 20, 358); ctx.stroke();
+
+      ctx.font = '400 17px Inter, sans-serif'; ctx.fillStyle = '#475569'; ctx.fillText('has achieved top performance and secured', W / 2, 400);
+
+      ctx.font = '800 52px Outfit, sans-serif'; ctx.fillStyle = colors.badge; ctx.fillText(rankTexts.eng, W / 2, 460);
+      ctx.font = '500 16px Outfit, sans-serif'; ctx.fillStyle = colors.badge; ctx.fillText(rankTexts.tam, W / 2, 485);
+
+      ctx.font = '400 16px Inter, sans-serif'; ctx.fillStyle = '#64748b'; ctx.fillText('in the MUTHU UG TRB Computer Based Test Examination', W / 2, 525);
+
+      var boxY = 550, boxW = 520, boxH = 55, boxX = (W - boxW) / 2;
+      ctx.fillStyle = '#f0f4ff'; roundRect(ctx, boxX, boxY, boxW, boxH, 10); ctx.fill();
+      ctx.strokeStyle = '#c7d2fe'; ctx.lineWidth = 1; roundRect(ctx, boxX, boxY, boxW, boxH, 10); ctx.stroke();
+      ctx.font = '700 16px Inter, sans-serif'; ctx.fillStyle = '#4f46e5';
+      ctx.fillText('Score: ' + scoreText + '  |  Percentage: ' + percentage + '  |  Duration: ' + timeTaken, W / 2, boxY + 33);
+
+      var academyName = dom.mainAcademyName ? dom.mainAcademyName.innerText : ' MUTHU UG TRB Academy';
+      ctx.font = '600 20px Outfit, sans-serif'; ctx.fillStyle = '#1e1b4b'; ctx.fillText(academyName, W / 2, 660);
+      
+      var dateStr = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+      ctx.font = '400 14px Inter, sans-serif'; ctx.fillStyle = '#94a3b8'; ctx.fillText('Date of Issue: ' + dateStr, W / 2, 690);
+
+      ctx.strokeStyle = grad1; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(100, H - 70); ctx.lineTo(W - 100, H - 70); ctx.stroke();
+
+      ctx.font = '400 13px Inter, sans-serif'; ctx.fillStyle = '#94a3b8';
+      ctx.fillText('____________________________', 250, H - 100); ctx.fillText('____________________________', W - 250, H - 100);
+      ctx.font = '600 13px Inter, sans-serif'; ctx.fillStyle = '#475569';
+      ctx.fillText('Examination Controller', 250, H - 82); ctx.fillText('Academy Director', W - 250, H - 82);
+
+      ctx.font = '400 11px Inter, sans-serif'; ctx.fillStyle = '#cbd5e1';
+      ctx.fillText('This is a system-generated certificate from MUTHU UG TRB CBT Examination Portal', W / 2, H - 42);
+
+      document.getElementById('cert-overlay').classList.remove('hidden');
+    }
+
+    function drawCornerOrnament(ctx, x, y, dx, dy, color) {
+      ctx.strokeStyle = color || '#d4af37'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, y + dy * 40); ctx.lineTo(x, y); ctx.lineTo(x + dx * 40, y); ctx.stroke();
+      ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x + dx * 5, y + dy * 35); ctx.lineTo(x + dx * 5, y + dy * 5); ctx.lineTo(x + dx * 35, y + dy * 5); ctx.stroke();
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
+    }
+
+    function closeCertificate() { document.getElementById('cert-overlay').classList.add('hidden'); }
+
+    function downloadCertificateImage() {
+      var canvas = document.getElementById('cert-canvas'), link = document.createElement('a');
+      var safeName = currentCertStudentName.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+      link.download = 'UG_TRB_Certificate_' + safeName + '_Rank' + currentCertRank + '.png';
+      link.href = canvas.toDataURL('image/png', 1.0); document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+
+    function printCertificate() {
+      var canvas = document.getElementById('cert-canvas'), dataUrl = canvas.toDataURL('image/png', 1.0);
+      var printWin = window.open('', '_blank', 'width=1200,height=900');
+      printWin.document.write('<html><head><title>MUTHU UG TRB MERIT CERTIFICATE - ' + currentCertStudentName + '</title><style>body{margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#fff;} img{max-width:100%;height:auto;}</style>
+  <link rel="manifest" href="./manifest.json">
+</head><body><img src="' + dataUrl + '" /><script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then(registration => {
+        console.log('SW registered: ', registration);
+      }).catch(registrationError => {
+        console.log('SW registration failed: ', registrationError);
+      });
+    });
+  }
+</script>
+</body></html>
