@@ -1,8 +1,9 @@
-﻿const CACHE_NAME = 'muthu-cbt-v3';
+const CACHE_NAME = 'muthu-cbt-v3';
 const urlsToCache = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './logo.jpg'
 ];
 
 self.addEventListener('install', event => {
